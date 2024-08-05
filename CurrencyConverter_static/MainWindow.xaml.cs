@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using System.Text.RegularExpressions;
 using System.Windows;
 
 namespace CurrencyConverter_static
@@ -51,6 +52,7 @@ namespace CurrencyConverter_static
 			cmbToCurrency.ItemsSource = dtCurrency.DefaultView;
 			cmbToCurrency.DisplayMemberPath = "Text";
 			cmbToCurrency.SelectedValuePath = "Value";
+			cmbToCurrency.SelectedIndex = 0;
 		}
 
 		private void txtCurrency_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
@@ -61,6 +63,8 @@ namespace CurrencyConverter_static
 		private void Convert_Click(object sender, RoutedEventArgs e)
 		{
 			double ConvertedValue;
+
+
 
 			if (txtCurrency.Text == null || txtCurrency.Text.Trim() == "")
 			{
@@ -86,18 +90,22 @@ namespace CurrencyConverter_static
 			else
 			{
 				ConvertedValue = double.Parse(txtCurrency.Text) / double.Parse(cmbFromCurrency.SelectedValue.ToString()) * double.Parse(cmbToCurrency.SelectedValue.ToString());
-				lblCurrency.Content = ConvertedValue.ToString();
+				lblCurrency.Content = cmbToCurrency.Text + " " + ConvertedValue.ToString("N3");
 			}
 		}
 
 		private void Clear_Click(object sender, RoutedEventArgs e)
 		{
 			lblCurrency.Content = "";
+			cmbFromCurrency.SelectedIndex = 0;
+			cmbToCurrency.SelectedIndex = 0;
+			txtCurrency.Text = "";
 		}
 
 		private void NumberValidationTextBox(object sender, System.Windows.Input.TextCompositionEventArgs e)
 		{
-
+			Regex regex = new Regex("[^0-9]+");
+			e.Handled = regex.IsMatch(e.Text);
 		}
 	}
 }
